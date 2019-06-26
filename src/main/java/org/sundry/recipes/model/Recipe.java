@@ -1,6 +1,7 @@
 package org.sundry.recipes.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Created by kon1299 on 2019-06-25
@@ -19,15 +20,24 @@ public class Recipe {
   private String source;
   private String url;
   private String directions;
+  
+  @Enumerated(value = EnumType.STRING)
   private Difficulty difficulty;
+  
+  @Lob
   private Byte[] image;
   
   @OneToOne(cascade = CascadeType.ALL)
   private Notes notes;
   
-  private Ingredient ingredient;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+  private Set<Ingredient> ingredients;
   
-  private Category category;
+  @ManyToMany
+  @JoinTable(name = "recipe_category",
+             joinColumns = @JoinColumn(name = "recipe_id"),
+             inverseJoinColumns = @JoinColumn(name = "category_id"))
+  private Set<Category> categories;
   
   public Long getId() {
     return id;
@@ -93,14 +103,6 @@ public class Recipe {
     this.directions = directions;
   }
   
-  public Difficulty getDifficulty() {
-    return difficulty;
-  }
-  
-  public void setDifficulty(Difficulty difficulty) {
-    this.difficulty = difficulty;
-  }
-  
   public Byte[] getImage() {
     return image;
   }
@@ -117,19 +119,27 @@ public class Recipe {
     this.notes = notes;
   }
   
-  public Ingredient getIngredient() {
-    return ingredient;
+  public Set<Ingredient> getIngredients() {
+    return ingredients;
   }
   
-  public void setIngredient(Ingredient ingredient) {
-    this.ingredient = ingredient;
+  public void setIngredients(Set<Ingredient> ingredients) {
+    this.ingredients = ingredients;
   }
   
-  public Category getCategory() {
-    return category;
+  public Set<Category> getCategories() {
+    return categories;
   }
   
-  public void setCategory(Category category) {
-    this.category = category;
+  public void setCategories(Set<Category> categories) {
+    this.categories = categories;
+  }
+  
+  public Difficulty getDifficulty() {
+    return difficulty;
+  }
+  
+  public void setDifficulty(Difficulty difficulty) {
+    this.difficulty = difficulty;
   }
 }
