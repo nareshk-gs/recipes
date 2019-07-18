@@ -1,5 +1,6 @@
 package org.sundry.recipes.bootstrap;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.Optional;
 /**
  * Created by kon1299 on 2019-06-28
  */
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
   
@@ -32,6 +34,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
     recipeRepository.saveAll(getRecipes());
+    log.debug("Saved Recipes on event");
   }
   
   private List<Recipe> getRecipes() {
@@ -138,6 +141,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     guacRecipe.getCategories().add(mexicanCategory);
   
     recipes.add(guacRecipe);
+    log.debug("Recipe Guacamole is created");
   
     Recipe tacosRecipe = new Recipe();
     tacosRecipe.setDescription("Spicy Grilled Chicken Taco");
@@ -195,6 +199,8 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     tacosRecipe.getCategories().add(mexicanCategory);
   
     recipes.add(tacosRecipe);
+    log.debug("Recipe Taco is created");
+    
     return recipes;
   }
 }
