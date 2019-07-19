@@ -1,6 +1,7 @@
 package org.sundry.recipes.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
  * Created by kon1299 on 2019-06-25
  */
 @Data
+@EqualsAndHashCode(exclude = {"recipe"})
 @Entity
 public class Ingredient {
   
@@ -26,6 +28,8 @@ public class Ingredient {
           joinColumns = @JoinColumn(name = "ingredient_id"),
           inverseJoinColumns = @JoinColumn(name = "uom_id"))
   private UnitOfMeasure uom;
+  
+  public Ingredient() {}
   
   public Ingredient(String description, BigDecimal amount, UnitOfMeasure uom) {
     this.description = description;
