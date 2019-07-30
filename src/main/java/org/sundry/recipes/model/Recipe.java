@@ -33,7 +33,8 @@ public class Recipe {
   @OneToOne(cascade = CascadeType.ALL)
   private Notes notes;
   
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+  //@OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+  @OneToMany(cascade = CascadeType.ALL)
   private Set<Ingredient> ingredients = new HashSet<>();
   
   @ManyToMany
@@ -123,7 +124,7 @@ public class Recipe {
   }
   
   public Recipe addIngredient(Ingredient ingredient) {
-    ingredient.setRecipe(this);
+    //ingredient.setRecipe(this);
     this.ingredients.add(ingredient);
     return this;
   }
