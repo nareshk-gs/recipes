@@ -18,7 +18,10 @@ public class Ingredient {
   /*@ManyToOne
   private Recipe recipe;*/
   
-  @OneToOne(fetch = FetchType.EAGER)
+  @OneToOne
+  @JoinTable(name = "ingredient_uom",
+          joinColumns = @JoinColumn(name = "ingredient_id"),
+          inverseJoinColumns = @JoinColumn(name = "uom_id"))
   private UnitOfMeasure uom;
   
   public Ingredient(String description, BigDecimal amount, UnitOfMeasure uom) {
