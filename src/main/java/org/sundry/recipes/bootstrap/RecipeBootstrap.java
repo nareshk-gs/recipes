@@ -1,5 +1,6 @@
 package org.sundry.recipes.bootstrap;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -16,12 +17,19 @@ import java.util.Optional;
 /**
  * Created by kon1299 on 2019-06-28
  */
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
   
   private final CategoryRepository categoryRepository;
   private final RecipeRepository recipeRepository;
   private final UnitOfMeasureRepository unitOfMeasureRepository;
+  public List<Recipe> recipes = new ArrayList<>(2);
+  
+  public void saveRecipe(Recipe recipe){
+    recipes.add(recipe);
+    log.debug("Recipe {} saved", recipe.getDescription());
+  }
   
   public RecipeBootstrap(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
     this.categoryRepository = categoryRepository;
@@ -32,10 +40,11 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
     recipeRepository.saveAll(getRecipes());
+    log.debug("Saved Recipes on event");
   }
   
   private List<Recipe> getRecipes() {
-    List<Recipe> recipes = new ArrayList<>(2);
+    
   
     Optional<UnitOfMeasure> eachUomOptional = unitOfMeasureRepository.findByDescription("Each");
     
@@ -114,7 +123,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
             "Read more: http://www.simplyrecipes.com/recipes/perfect_guacamole/#ixzz4jvpiV9Sd");
   
     Notes guacNotes = new Notes();
-  
+    
     guacNotes.setRecipeNotes("For a very quick guacamole just take a 1/4 cup of salsa and mix it in with your mashed avocados.\n" +
             "Feel free to experiment! One classic Mexican guacamole has pomegranate seeds and chunks of peaches in it (a Diana Kennedy favorite). Try guacamole with added pineapple, mango, or strawberries.\n" +
             "The simplest version of guacamole is just mashed avocados with salt. Don't let the lack of availability of other ingredients stop you from making guacamole.\n" +
@@ -137,7 +146,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     guacRecipe.getCategories().add(americanCategory);
     guacRecipe.getCategories().add(mexicanCategory);
   
-    recipes.add(guacRecipe);
+    saveRecipe(guacRecipe);
   
     Recipe tacosRecipe = new Recipe();
     tacosRecipe.setDescription("Spicy Grilled Chicken Taco");
@@ -194,7 +203,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     tacosRecipe.getCategories().add(americanCategory);
     tacosRecipe.getCategories().add(mexicanCategory);
   
-    recipes.add(tacosRecipe);
+    saveRecipe(tacosRecipe);
+    
     return recipes;
   }
+  
+  
 }
