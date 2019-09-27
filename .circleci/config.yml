@@ -23,7 +23,7 @@ jobs:
           command:
             ./gradlew test
       - store_test_results:
-          path: build/te                                           st-results/test
+          path: build/test-results/test
           when: always
       - store_artifacts:
           path: build/test-results/test
@@ -48,3 +48,6 @@ workflows:
       - test:
           requires:
             - build
+      - package:
+          requires:
+            - test
