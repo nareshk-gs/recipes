@@ -21,9 +21,6 @@ public class Category {
   private String categoryName;
 
   @ManyToMany(mappedBy = "categories")
-  /*@JoinTable(name = "recipe_category",
-             joinColumns = @JoinColumn(name = "category_id"),
-             inverseJoinColumns = @JoinColumn(name = "recipe_id"))*/
   private Set<Recipe> recipes;
   
 }

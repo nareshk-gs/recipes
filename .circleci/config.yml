@@ -1,0 +1,53 @@
+version: 2
+jobs:
+  build:
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - run: #echo "A first hello"
+          name: Build Job
+          command:
+            ./gradlew clean build
+
+  test:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - run:
+          name: System Test
+          command:
+            ./gradlew test
+      - store_test_results:
+          path: build/test-results/test
+          when: always
+      - store_artifacts:
+          path: build/test-results/test
+          when: always
+
+  package:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - run:
+          name: Assemble JAR
+          command:
+            ./gradlew assemble
+      - store_artifacts:
+          path: build/libs
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - package:
+          requires:
+            - test
