@@ -1,5 +1,13 @@
 package org.sundry.recipes.model;
 
+import com.openpojo.reflection.PojoClass;
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.rule.impl.GetterMustExistRule;
+import com.openpojo.validation.rule.impl.SetterMustExistRule;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,33 +25,17 @@ public class IngredientTest {
   
   Ingredient ingredient;
   
-  @Before
-  public void setUp() throws Exception {
-    UnitOfMeasure uom = new UnitOfMeasure();
-    uom.setId(1L);
-    uom.setDescription("TeaSpoon");
-    ingredient = new Ingredient("salt", new BigDecimal(1), uom);
-  }
-  
   @Test
-  public void getId() {
-    ingredient.setId(1L);
-    assertThat(ingredient.getId(), is(equalTo(1L)));
-  }
-  
-  @Test
-  public void getDescription() {
-    assertThat(ingredient.getDescription(), is(equalTo("salt")));
-  }
-  
-  @Test
-  public void getAmount() {
-    assertThat(ingredient.getAmount(), is(equalTo(new BigDecimal(1))));
-  }
-  
-  @Test
-  public void getUom() {
-    assertThat(ingredient.getUom().getId(), is(equalTo(1L)));
-    assertThat(ingredient.getUom().getDescription(), is(equalTo("TeaSpoon")));
+  public void testGettersSetters() {
+    PojoClass pojoClass = PojoClassFactory.getPojoClass(Ingredient.class);
+    Validator validator = ValidatorBuilder
+            .create()
+            .with(new SetterMustExistRule())
+            .with(new GetterMustExistRule())
+            .with(new SetterTester())
+            .with(new GetterTester())
+            .build();
+    
+    validator.validate(pojoClass);
   }
 }

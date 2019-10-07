@@ -1,5 +1,13 @@
 package org.sundry.recipes.model;
 
+import com.openpojo.reflection.PojoClass;
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.rule.impl.GetterMustExistRule;
+import com.openpojo.validation.rule.impl.SetterMustExistRule;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,37 +22,17 @@ import static org.junit.Assert.assertEquals;
  */
 public class CategoryTest {
   
-  Category category;
-  
-  @Before
-  public void setUp() throws Exception {
-    category = new Category();
-  }
-  
   @Test
-  public void getId() {
-    Long id = 4L;
-    category.setId(id);
-    assertEquals(id, category.getId());
-  }
-  
-  @Test
-  public void getCategoryName() {
-    String categoryName = "testCat";
-    category.setCategoryName(categoryName);
-    assertEquals(categoryName, category.getCategoryName());
-  }
-  
-  @Test
-  public void getRecipes() {
-    Recipe r1 = new Recipe();
-    r1.setId(1L);
-    Recipe r2 = new Recipe();
-    r2.setId(2L);
-    Set<Recipe> recipes = new HashSet<>();
-    recipes.add(r1);
-    recipes.add(r2);
-    category.setRecipes(recipes);
-    assertEquals(2, category.getRecipes().size());
+  public void testGettersSetters() {
+    PojoClass pojoClass = PojoClassFactory.getPojoClass(Category.class);
+    Validator validator = ValidatorBuilder
+            .create()
+            .with(new SetterMustExistRule())
+            .with(new GetterMustExistRule())
+            .with(new SetterTester())
+            .with(new GetterTester())
+            .build();
+    
+    validator.validate(pojoClass);
   }
 }

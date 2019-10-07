@@ -1,5 +1,13 @@
 package org.sundry.recipes.model;
 
+import com.openpojo.reflection.PojoClass;
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.rule.impl.GetterMustExistRule;
+import com.openpojo.validation.rule.impl.SetterMustExistRule;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SetterTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.sundry.recipes.bootstrap.RecipeBootstrap;
@@ -20,76 +28,17 @@ import static org.junit.Assert.*;
  */
 public class RecipeTest {
   
-  Recipe recipe;
-  
-  @Before
-  public void setUp() throws Exception {
+  @Test
+  public void testGettersSetters() {
+    PojoClass pojoClass = PojoClassFactory.getPojoClass(Recipe.class);
+    Validator validator = ValidatorBuilder
+            .create()
+            .with(new SetterMustExistRule())
+            .with(new GetterMustExistRule())
+            .with(new SetterTester())
+            .with(new GetterTester())
+            .build();
     
-    recipe = new Recipe();
-    
-  }
-  
-  @Test
-  public void getId() {
-    
-    recipe.setId(1L);
-    
-    assertThat(recipe.getId(), is(equalTo(1L)));
-  }
-  
-  @Test
-  public void getDescription() {
-    
-    recipe.setDescription("test");
-    assertThat(recipe.getDescription(), is(equalTo("test")));
-  }
-  
-  @Test
-  public void getPrepTime() {
-    recipe.setPrepTime(30);
-    assertThat(recipe.getPrepTime(), is(equalTo(30)));
-  }
-  
-  @Test
-  public void getCookTime() {
-    recipe.setCookTime(10);
-    assertThat(recipe.getCookTime(), is(equalTo(10)));
-  }
-  
-  @Test
-  public void getServings() {
-    recipe.setServings(5);
-    assertThat(recipe.getServings(), is(equalTo(5)));
-  }
-  
-  @Test
-  public void getSource() {
-    recipe.setSource("web");
-    assertThat(recipe.getSource(), is(equalTo("web")));
-  }
-  
-  @Test
-  public void getUrl() {
-    recipe.setUrl("url");
-    assertThat(recipe.getUrl(), is(equalTo("url")));
-  }
-  
-  @Test
-  public void getDirections() {
-    recipe.setDirections("who cares");
-    assertThat(recipe.getDirections(), containsString("care"));
-  }
-  
-  @Test
-  public void getDifficulty() {
-    recipe.setDifficulty(Difficulty.HARD);
-    assertThat(recipe.getDifficulty(), is(equalTo(Difficulty.HARD)));
-  }
-  
-  @Test
-  public void getNotes() {
-    Notes notes = new Notes();
-    recipe.setNotes(notes);
-    assertThat(recipe.getNotes(), is(equalTo(notes)));
+    validator.validate(pojoClass);
   }
 }
